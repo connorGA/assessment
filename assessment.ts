@@ -50,3 +50,82 @@ export interface ItemStore {
      */
     size: () => number
 }
+
+class ItemStoreImpl implements ItemStore {
+    private itemsById: Map<string, Item>;
+    private idsByTag: Map<string, Set<string>>;
+
+    constructor() {
+        this.itemsById = new Map();
+        this.idsByTag = new Map();
+    }
+
+    put(item: Item): void {
+        const existingItem = this.itemsById.get(item.id);
+        if (existingItem) {
+            // Remove the old item from the tag map
+            const tagSet = this.idsByTag.get(existingItem.tag);
+            if (tagSet) {
+                tagSet.delete(existingItem.id);
+                if (tagSet.size === 0) {
+                    this.idsByTag.delete(existingItem.tag);
+                }
+            }
+        }
+
+        // Add or replace the item in the items map
+        this.itemsById.set(item.id, item);
+
+        // Add the item to the tag map
+        if (!this.idsByTag.has(item.tag)) {
+            this.idsByTag.set(item.tag, new Set());
+        }
+        this.idsByTag.get(item.tag)?.add(item.id);
+    }
+
+    get(id: string): Item | null {
+        return this.itemsById.get(id) || null;
+    }
+
+    dropAllByTag(tag: string): void {
+        const tagSet = this.idsByTag.get(tag);
+        if (tagSet) {
+            for (const id of tagSet) {
+                this.itemsById.delete(id);
+            }
+            this.idsByTag.delete(tag);
+        }
+    }
+
+    size(): number {
+        return this.itemsById.size;
+    }
+}
+
+// Example usage:
+const store = new ItemStoreImpl();
+
+store.put({ id: '1', tag: 'tag1' });
+store.put({ id: '2', tag: 'tag1' });
+store.put({ id: '3', tag: 'tag2' });
+
+console.log(store.get('1')); // { id: '1', tag: 'tag1' }
+console.log(store.size()); // 3
+
+store.dropAllByTag('tag1');
+
+console.log(store.get('1')); // null
+console.log(store.size()); // 1
+
+/** Q2 Explanation
+ * 1. Map for items by id:
+ *      - Put: O(1) - Adding or updating an item in a map
+ *      - Get: O(1) - Retrieving an item by its id
+ *      - Delete: O(1) - Deleting an item by its id
+ *   Maps provide constant time complexity for these operations on average, making them efficient for frequent use.
+ * 
+ * 2. Map of sets for ids by tag:
+ *      - Put: O(1) - Adding an id to the set corresponding to a tag
+ *      - Delete all by tag: O(n) - Removing all ids associated with a tag, where n is the number of ids for that tag
+ *    Using a map of sets allows us to efficiently manage and query items by their tags, which is crucial for the 'dropAllByTag' operation
+ */
