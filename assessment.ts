@@ -129,3 +129,10 @@ console.log(store.size()); // 1
  *      - Delete all by tag: O(n) - Removing all ids associated with a tag, where n is the number of ids for that tag
  *    Using a map of sets allows us to efficiently manage and query items by their tags, which is crucial for the 'dropAllByTag' operation
  */
+
+
+/** Question 3. Asynchronous Event Debugging
+ * 
+ *              - The original code fails in the cases where the script executes before the 'app-container' element is available in the DOM.
+ *                The second solution works because the 'load' event on the 'window' object is fired when the entire page has loaded, ensuring the 'app-container' element is available in the DOM.
+ */
