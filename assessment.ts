@@ -136,3 +136,24 @@ console.log(store.size()); // 1
  *              - The original code fails in the cases where the script executes before the 'app-container' element is available in the DOM.
  *                The second solution works because the 'load' event on the 'window' object is fired when the entire page has loaded, ensuring the 'app-container' element is available in the DOM.
  */
+
+
+/** Question 4. Debugging
+ * 
+ *     - When you call 'bug.rating()', it returns the 'rating' function itself because  'this.rating' is a reference to the 'rating' method, not the '_rating' property
+ *     - To fix this, we should return the '_rating' property inside the 'rating' method 
+ *  
+ *  Corrected code:
+ */
+class Bug1 {
+    _rating: number | null = null;
+
+    rating() {
+        return this._rating;
+    }
+}
+
+export function question4() {
+    const bug = new Bug1();
+    return `Rating is ${bug.rating()}`;
+}
