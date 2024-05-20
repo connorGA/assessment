@@ -157,3 +157,16 @@ export function question4() {
     const bug = new Bug1();
     return `Rating is ${bug.rating()}`;
 }
+
+
+/** Question 5. Spread Operator
+ * 
+ *      - Output:
+ *          orig and modified are the same
+ *          orig.prop1 is m1
+ *          orig.prop1 is m1
+ *          orig.prop1 is m2
+ * 
+ *  
+ *      -  The second comparison 'if (orig === modified)' is false because after using the spread operater, 'modified' points to a new object. Because of this, the corresponding log statement 'orig and modified are still the same' is not executed
+ */
